@@ -12,8 +12,11 @@ jobs:
       - name: Hello world action step
         uses: ./ # Uses an action in the root directory
         id: ghstars_sync
+        env:
+          YOUTUBE_CHANNEL_FEED: https://www.youtube.com/feeds/videos.xml?channel_id=UCzR2u5RWXWjUh7CwLSvbitA
+          GH_STARS_TOKEN: ${{ secrets.GH_STARS_TOKEN }}
       # Use the output from the `hello` step
       - name: Get the output time
         run: | 
           echo "The [time] was ${{ steps.ghstars_sync.outputs.time }}"
-          echo "The [yt_total] was ${{ steps.ghstars_sync.outputs.yt_total }}"
+          echo "The [total_new_contributions] was ${{ steps.ghstars_sync.outputs.total_new_contributions }}"

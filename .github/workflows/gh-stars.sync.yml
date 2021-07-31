@@ -11,9 +11,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Hello world action step
         uses: ./ # Uses an action in the root directory
-        id: hello
-        with:
-          who-to-greet: 'Mona the Octocat'
+        id: ghstars_sync
       # Use the output from the `hello` step
       - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+        run: | 
+          echo "The [time] was ${{ steps.ghstars_sync.outputs.time }}"
+          echo "The [status] was ${{ steps.ghstars_sync.outputs.status }}"
+          echo "The [yt_total] was ${{ steps.ghstars_sync.outputs.yt_total }}"

@@ -11,7 +11,7 @@ async function main() {
 
     console.log(GH_USER, YOUTUBE_CHANNEL_FEED);
 
-    const response = await fetch(YOUTUBE_CHANNEL_FEED)
+    const youtubeVideos = await fetch(YOUTUBE_CHANNEL_FEED)
       .then(async (res) => {
         const response = await res.text();
         const parsedResponse = xmlParser.parse(response);
@@ -32,18 +32,18 @@ async function main() {
         });
       })
 
-    const totalYouTubeVideos = response.length;
-
+    const totalYouTubeVideos = youtubeVideos.length;
+    console.log(youtubeVideos);
+   
     // ======================================
     // [OUTPUT] =============================
     // ======================================
     core.setOutput("yt_total", totalYouTubeVideos);
     const time = (new Date()).toTimeString();
     core.setOutput("time", time);
-    core.setOutput("time", time);
     core.setOutput("status", "success");
     const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`The event payload: ${payload}`);
+    // console.log(`The event payload: ${payload}`);
   } catch (error) {
     core.setFailed(error.message);
   }

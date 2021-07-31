@@ -13,7 +13,11 @@ const GH_STARS_ENDPOINT = 'https://github-stars-api.herokuapp.com/';
 const service = {
   types,
   async addNewContributions() {
-    // [VideoContributions]
+    // [Notion]
+    // TODO
+    // ======================================
+
+    // [YouTube Channel VideoContributions]
     const last15youtubeVideos = await youtubeService.getLast15Uploads();
     const allContributions = await service.getAllContributions();  
     const newYouTubeContributions = differenceBy(last15youtubeVideos, allContributions, 'url').map((video) => {
@@ -25,7 +29,6 @@ const service = {
         date: video.date
       }
     });
-    
     // ======================================
 
     const newContributions = [

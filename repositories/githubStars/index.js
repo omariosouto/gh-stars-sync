@@ -1,11 +1,9 @@
 const fetch = require('node-fetch');
 const { getYouTubeVideoId } = require('../../infra/getYouTubeVideoId');
 const youtubeService = require('../youtube');
+const notionService = require('../notion');
 const { differenceBy } = require('lodash');
-
-const types = {
-  VIDEO_PODCAST: 'VIDEO_PODCAST',
-}
+const { types } = require('./types');
 
 const GH_STARS_TOKEN = process.env.GH_STARS_TOKEN;
 const GH_STARS_ENDPOINT = 'https://github-stars-api.herokuapp.com/';
@@ -13,13 +11,14 @@ const GH_STARS_ENDPOINT = 'https://github-stars-api.herokuapp.com/';
 const service = {
   types,
   async addNewContributions() {
+    const allContributions = await service.getAllContributions();  
     // [Notion]
-    // TODO
+    const allNotionContributions = await notionService.getAllContributions();
+    const newNotionContributions = differenceBy(allNotionContributions, allContributions, 'url');
     // ======================================
 
     // [YouTube Channel VideoContributions]
     const last15youtubeVideos = await youtubeService.getLast15Uploads();
-    const allContributions = await service.getAllContributions();  
     const newYouTubeContributions = differenceBy(last15youtubeVideos, allContributions, 'url').map((video) => {
       return {
         title: video.title,
@@ -33,6 +32,7 @@ const service = {
 
     const newContributions = [
       ...newYouTubeContributions,
+      ...newNotionContributions,
     ]
 
     if(newContributions.length) {

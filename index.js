@@ -1,6 +1,6 @@
 require('dotenv').config();
 const core = require('@actions/core');
-const githubStarsService = require('./services/githubStars');
+const githubStarsService = require('./repositories/githubStars');
 
 async function main() {
   try {

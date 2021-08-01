@@ -63,7 +63,10 @@ const service = {
           }),
         })
           .then((res) => res.json())
-          .then((response) => console.log('GH_REGISTRY', response));
+          .then((response) => {
+            if (response.errors) throw new Error(response.errors.message);
+            console.log('GH_REGISTRY', response)
+          });
     }
 
     return {

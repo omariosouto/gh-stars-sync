@@ -18,6 +18,7 @@ jobs:
         env:
           YOUTUBE_CHANNEL_FEED: https://www.youtube.com/feeds/videos.xml?channel_id=UCzR2u5RWXWjUh7CwLSvbitA
           GH_STARS_TOKEN: ${{ secrets.GH_STARS_TOKEN }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
       # Use the output from the `hello` step
       - name: Get the output time
         run: | 

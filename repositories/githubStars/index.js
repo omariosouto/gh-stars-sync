@@ -11,7 +11,7 @@ const GH_STARS_ENDPOINT = 'https://github-stars-api.herokuapp.com/';
 const service = {
   types,
   async addNewContributions() {
-    const allContributions = await service.getAllContributions();  
+    const allContributions = await service.getAllContributions();
     // [Notion]
     const allNotionContributions = await notionService.getAllContributions();
     const newNotionContributions = differenceBy(allNotionContributions, allContributions, 'url');
@@ -35,38 +35,43 @@ const service = {
       ...newNotionContributions,
     ]
 
-    if(newContributions.length) {
+    if (newContributions.length) {
+      const query = `
+      mutation {
+        createContributions(data: [
+          ${newContributions.map((contribution) => {
+        return `{
+              title: "${contribution.title}"
+              url: "${contribution.url}"
+              description: "${contribution.description}"
+              type: ${contribution.type}
+              date: "${contribution.date}"
+            }`
+      }).join('')}
+        ]) {
+          id
+        }
+      }
+    `;
+      console.log(query);
       await fetch('https://github-stars-api.herokuapp.com/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: GH_STARS_TOKEN,
-          },
-          body: JSON.stringify({
-            query: `
-              mutation {
-                createContributions(data: [
-                  ${newContributions.map((contribution) => {
-                    return `{
-                      title: "${contribution.title}"
-                      url: "${contribution.url}"
-                      description: "${contribution.description}"
-                      type: ${contribution.type}
-                      date: "${contribution.date}"
-                    }`
-                  }).join('')}
-                ]) {
-                  id
-                }
-              }
-            `,
-          }),
-        })
-          .then((res) => res.json())
-          .then((response) => {
-            if (response.errors) throw new Error(response.errors.message);
-            console.log('GH_REGISTRY', response)
-          });
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: GH_STARS_TOKEN,
+        },
+        body: JSON.stringify({
+          query,
+        }),
+      })
+        .then((res) => res.json())
+        .then((response) => {
+          if (response.errors) {
+            console.log(JSON.stringify(response.errors, null, 4));
+            throw new Error(response.errors.message);
+          };
+          console.log('GH_REGISTRY', response)
+        });
     }
 
     return {
@@ -92,18 +97,18 @@ const service = {
         `,
       }),
     })
-    .then((res) => res.json())
-    .then((res) => {
-      return res.data.contributions.map(({ url }) => {
-        if(url.includes('youtu')) {
-          return {
-            url: `https://youtu.be/${getYouTubeVideoId(url)}`,
-          };
-        }
+      .then((res) => res.json())
+      .then((res) => {
+        return res.data.contributions.map(({ url }) => {
+          if (url.includes('youtu')) {
+            return {
+              url: `https://youtu.be/${getYouTubeVideoId(url)}`,
+            };
+          }
 
-        return { url }
+          return { url }
+        })
       })
-    })
   }
 };
 

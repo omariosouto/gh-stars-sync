@@ -1,6 +1,14 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 749:
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"name":"@notionhq/client","version":"0.2.3","description":"A simple and easy to use client for the Notion API","engines":{"node":">=12"},"homepage":"https://developers.notion.com/docs/getting-started","bugs":{"url":"https://github.com/makenotion/notion-sdk-js/issues"},"repository":{"type":"git","url":"https://github.com/makenotion/notion-sdk-js/"},"keywords":["notion","notionapi","rest","notion-api"],"main":"./build/src","scripts":{"prepare":"npm run build","prepublishOnly":"npm run lint && npm run test","build":"tsc","prettier":"prettier --write .","lint":"prettier --check . && eslint . --ext .ts && cspell \'**/*\' ","test":"ava","check-links":"git ls-files | grep md$ | xargs -n 1 markdown-link-check","prebuild":"npm run clean","clean":"rm -rf ./build"},"author":"","license":"MIT","files":["build/package.json","build/src/**"],"dependencies":{"@types/node-fetch":"^2.5.10","node-fetch":"^2.6.1"},"devDependencies":{"@ava/typescript":"^2.0.0","@typescript-eslint/eslint-plugin":"^4.22.0","@typescript-eslint/parser":"^4.22.0","ava":"^3.15.0","cspell":"^5.4.1","eslint":"^7.24.0","markdown-link-check":"^3.8.7","prettier":"^2.3.0","typescript":"^4.2.4"}}');
+
+/***/ }),
+
 /***/ 906:
 /***/ ((module) => {
 
@@ -486,6 +494,720 @@ function toCommandValue(input) {
 }
 exports.toCommandValue = toCommandValue;
 //# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 492:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _Client_auth, _Client_logLevel, _Client_logger, _Client_prefixUrl, _Client_timeoutMs, _Client_notionVersion, _Client_fetch, _Client_agent, _Client_userAgent;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const logging_1 = __nccwpck_require__(96);
+const errors_1 = __nccwpck_require__(259);
+const helpers_1 = __nccwpck_require__(682);
+const api_endpoints_1 = __nccwpck_require__(807);
+const node_fetch_1 = __nccwpck_require__(467);
+const package_json_1 = __nccwpck_require__(749);
+class Client {
+    constructor(options) {
+        var _a, _b, _c, _d, _e, _f;
+        _Client_auth.set(this, void 0);
+        _Client_logLevel.set(this, void 0);
+        _Client_logger.set(this, void 0);
+        _Client_prefixUrl.set(this, void 0);
+        _Client_timeoutMs.set(this, void 0);
+        _Client_notionVersion.set(this, void 0);
+        _Client_fetch.set(this, void 0);
+        _Client_agent.set(this, void 0);
+        _Client_userAgent.set(this, void 0);
+        /*
+         * Notion API endpoints
+         */
+        this.blocks = {
+            children: {
+                /**
+                 * Append block children
+                 */
+                append: (args) => {
+                    return this.request({
+                        path: api_endpoints_1.blocksChildrenAppend.path(args),
+                        method: api_endpoints_1.blocksChildrenAppend.method,
+                        query: helpers_1.pick(args, api_endpoints_1.blocksChildrenAppend.queryParams),
+                        body: helpers_1.pick(args, api_endpoints_1.blocksChildrenAppend.bodyParams),
+                        auth: args === null || args === void 0 ? void 0 : args.auth,
+                    });
+                },
+                /**
+                 * Retrieve block children
+                 */
+                list: (args) => {
+                    return this.request({
+                        path: api_endpoints_1.blocksChildrenList.path(args),
+                        method: api_endpoints_1.blocksChildrenList.method,
+                        query: helpers_1.pick(args, api_endpoints_1.blocksChildrenList.queryParams),
+                        body: helpers_1.pick(args, api_endpoints_1.blocksChildrenList.bodyParams),
+                        auth: args === null || args === void 0 ? void 0 : args.auth,
+                    });
+                },
+            },
+        };
+        this.databases = {
+            /**
+             * List databases
+             *
+             * @deprecated Please use `search`
+             */
+            list: (args = {}) => {
+                return this.request({
+                    path: api_endpoints_1.databasesList.path(),
+                    method: api_endpoints_1.databasesList.method,
+                    query: helpers_1.pick(args, api_endpoints_1.databasesList.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.databasesList.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+            /**
+             * Retrieve a database
+             */
+            retrieve: (args) => {
+                return this.request({
+                    path: api_endpoints_1.databasesRetrieve.path(args),
+                    method: api_endpoints_1.databasesRetrieve.method,
+                    query: helpers_1.pick(args, api_endpoints_1.databasesRetrieve.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.databasesRetrieve.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+            /**
+             * Query a database
+             */
+            query: (args) => {
+                return this.request({
+                    path: api_endpoints_1.databasesQuery.path(args),
+                    method: api_endpoints_1.databasesQuery.method,
+                    query: helpers_1.pick(args, api_endpoints_1.databasesQuery.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.databasesQuery.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+            /**
+             * Create a database
+             */
+            create: (args) => {
+                return this.request({
+                    path: api_endpoints_1.databasesCreate.path(),
+                    method: api_endpoints_1.databasesCreate.method,
+                    query: helpers_1.pick(args, api_endpoints_1.databasesCreate.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.databasesCreate.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+        };
+        this.pages = {
+            /**
+             * Create a page
+             */
+            create: (args) => {
+                return this.request({
+                    path: api_endpoints_1.pagesCreate.path(),
+                    method: api_endpoints_1.pagesCreate.method,
+                    query: helpers_1.pick(args, api_endpoints_1.pagesCreate.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.pagesCreate.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+            /**
+             * Retrieve a page
+             */
+            retrieve: (args) => {
+                return this.request({
+                    path: api_endpoints_1.pagesRetrieve.path(args),
+                    method: api_endpoints_1.pagesRetrieve.method,
+                    query: helpers_1.pick(args, api_endpoints_1.pagesRetrieve.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.pagesRetrieve.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+            /**
+             * Update page properties
+             */
+            update: (args) => {
+                return this.request({
+                    path: api_endpoints_1.pagesUpdate.path(args),
+                    method: api_endpoints_1.pagesUpdate.method,
+                    query: helpers_1.pick(args, api_endpoints_1.pagesUpdate.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.pagesUpdate.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+        };
+        this.users = {
+            /**
+             * Retrieve a user
+             */
+            retrieve: (args) => {
+                return this.request({
+                    path: api_endpoints_1.usersRetrieve.path(args),
+                    method: api_endpoints_1.usersRetrieve.method,
+                    query: helpers_1.pick(args, api_endpoints_1.usersRetrieve.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.usersRetrieve.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+            /**
+             * List all users
+             */
+            list: (args = {}) => {
+                return this.request({
+                    path: api_endpoints_1.usersList.path(),
+                    method: api_endpoints_1.usersList.method,
+                    query: helpers_1.pick(args, api_endpoints_1.usersList.queryParams),
+                    body: helpers_1.pick(args, api_endpoints_1.usersList.bodyParams),
+                    auth: args === null || args === void 0 ? void 0 : args.auth,
+                });
+            },
+        };
+        __classPrivateFieldSet(this, _Client_auth, options === null || options === void 0 ? void 0 : options.auth, "f");
+        __classPrivateFieldSet(this, _Client_logLevel, (_a = options === null || options === void 0 ? void 0 : options.logLevel) !== null && _a !== void 0 ? _a : logging_1.LogLevel.WARN, "f");
+        __classPrivateFieldSet(this, _Client_logger, (_b = options === null || options === void 0 ? void 0 : options.logger) !== null && _b !== void 0 ? _b : logging_1.makeConsoleLogger(package_json_1.name), "f");
+        __classPrivateFieldSet(this, _Client_prefixUrl, ((_c = options === null || options === void 0 ? void 0 : options.baseUrl) !== null && _c !== void 0 ? _c : "https://api.notion.com") + "/v1/", "f");
+        __classPrivateFieldSet(this, _Client_timeoutMs, (_d = options === null || options === void 0 ? void 0 : options.timeoutMs) !== null && _d !== void 0 ? _d : 60000, "f");
+        __classPrivateFieldSet(this, _Client_notionVersion, (_e = options === null || options === void 0 ? void 0 : options.notionVersion) !== null && _e !== void 0 ? _e : Client.defaultNotionVersion, "f");
+        __classPrivateFieldSet(this, _Client_fetch, (_f = options === null || options === void 0 ? void 0 : options.fetch) !== null && _f !== void 0 ? _f : node_fetch_1.default, "f");
+        __classPrivateFieldSet(this, _Client_agent, options === null || options === void 0 ? void 0 : options.agent, "f");
+        __classPrivateFieldSet(this, _Client_userAgent, `notionhq-client/${package_json_1.version}`, "f");
+    }
+    /**
+     * Sends a request.
+     *
+     * @param path
+     * @param method
+     * @param query
+     * @param body
+     * @returns
+     */
+    async request({ path, method, query, body, auth, }) {
+        this.log(logging_1.LogLevel.INFO, "request start", { method, path });
+        // If the body is empty, don't send the body in the HTTP request
+        const bodyAsJsonString = !body || Object.entries(body).length === 0
+            ? undefined
+            : JSON.stringify(body);
+        const url = new URL(`${__classPrivateFieldGet(this, _Client_prefixUrl, "f")}${path}`);
+        if (query) {
+            for (const [key, value] of Object.entries(query)) {
+                if (value !== undefined) {
+                    url.searchParams.append(key, String(value));
+                }
+            }
+        }
+        const headers = {
+            ...this.authAsHeaders(auth),
+            "Notion-Version": __classPrivateFieldGet(this, _Client_notionVersion, "f"),
+            "user-agent": __classPrivateFieldGet(this, _Client_userAgent, "f"),
+        };
+        if (bodyAsJsonString !== undefined) {
+            headers["content-type"] = "application/json";
+        }
+        try {
+            const response = await errors_1.RequestTimeoutError.rejectAfterTimeout(__classPrivateFieldGet(this, _Client_fetch, "f").call(this, url.toString(), {
+                method,
+                headers,
+                body: bodyAsJsonString,
+                agent: __classPrivateFieldGet(this, _Client_agent, "f"),
+            }), __classPrivateFieldGet(this, _Client_timeoutMs, "f"));
+            const responseText = await response.text();
+            if (!response.ok) {
+                throw errors_1.buildRequestError(response, responseText);
+            }
+            const responseJson = JSON.parse(responseText);
+            this.log(logging_1.LogLevel.INFO, `request success`, { method, path });
+            return responseJson;
+        }
+        catch (error) {
+            if (!errors_1.isNotionClientError(error)) {
+                throw error;
+            }
+            // Log the error if it's one of our known error types
+            this.log(logging_1.LogLevel.WARN, `request fail`, {
+                code: error.code,
+                message: error.message,
+            });
+            if (errors_1.isHTTPResponseError(error)) {
+                // The response body may contain sensitive information so it is logged separately at the DEBUG level
+                this.log(logging_1.LogLevel.DEBUG, `failed response body`, {
+                    body: error.body,
+                });
+            }
+            throw error;
+        }
+    }
+    /**
+     * Search
+     */
+    search(args) {
+        return this.request({
+            path: api_endpoints_1.search.path(),
+            method: api_endpoints_1.search.method,
+            query: helpers_1.pick(args, api_endpoints_1.search.queryParams),
+            body: helpers_1.pick(args, api_endpoints_1.search.bodyParams),
+            auth: args === null || args === void 0 ? void 0 : args.auth,
+        });
+    }
+    /**
+     * Emits a log message to the console.
+     *
+     * @param level The level for this message
+     * @param args Arguments to send to the console
+     */
+    log(level, message, extraInfo) {
+        if (logging_1.logLevelSeverity(level) >= logging_1.logLevelSeverity(__classPrivateFieldGet(this, _Client_logLevel, "f"))) {
+            __classPrivateFieldGet(this, _Client_logger, "f").call(this, level, message, extraInfo);
+        }
+    }
+    /**
+     * Transforms an API key or access token into a headers object suitable for an HTTP request.
+     *
+     * This method uses the instance's value as the default when the input is undefined. If neither are defined, it returns
+     * an empty object
+     *
+     * @param auth API key or access token
+     * @returns headers key-value object
+     */
+    authAsHeaders(auth) {
+        const headers = {};
+        const authHeaderValue = auth !== null && auth !== void 0 ? auth : __classPrivateFieldGet(this, _Client_auth, "f");
+        if (authHeaderValue !== undefined) {
+            headers["authorization"] = `Bearer ${authHeaderValue}`;
+        }
+        return headers;
+    }
+}
+exports.default = Client;
+_Client_auth = new WeakMap(), _Client_logLevel = new WeakMap(), _Client_logger = new WeakMap(), _Client_prefixUrl = new WeakMap(), _Client_timeoutMs = new WeakMap(), _Client_notionVersion = new WeakMap(), _Client_fetch = new WeakMap(), _Client_agent = new WeakMap(), _Client_userAgent = new WeakMap();
+Client.defaultNotionVersion = "2021-05-13";
+//# sourceMappingURL=Client.js.map
+
+/***/ }),
+
+/***/ 807:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/**
+ * Notion API Endpoints
+ *
+ * This file contains metadata about each of the API endpoints such as the HTTP method, the parameters, and the types.
+ * In the future, the contents of this file will be generated from an API definition.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.search = exports.usersList = exports.usersRetrieve = exports.pagesUpdate = exports.pagesRetrieve = exports.databasesCreate = exports.pagesCreate = exports.databasesRetrieve = exports.databasesQuery = exports.databasesList = exports.blocksChildrenList = exports.blocksChildrenAppend = void 0;
+exports.blocksChildrenAppend = {
+    method: "patch",
+    pathParams: ["block_id"],
+    queryParams: [],
+    bodyParams: ["children"],
+    path: (p) => `blocks/${p.block_id}/children`,
+};
+exports.blocksChildrenList = {
+    method: "get",
+    pathParams: ["block_id"],
+    queryParams: ["start_cursor", "page_size"],
+    bodyParams: [],
+    path: (p) => `blocks/${p.block_id}/children`,
+};
+exports.databasesList = {
+    method: "get",
+    pathParams: [],
+    queryParams: ["start_cursor", "page_size"],
+    bodyParams: [],
+    path: () => `databases`,
+};
+exports.databasesQuery = {
+    method: "post",
+    pathParams: ["database_id"],
+    queryParams: [],
+    bodyParams: ["filter", "sorts", "start_cursor", "page_size"],
+    path: (p) => `databases/${p.database_id}/query`,
+};
+exports.databasesRetrieve = {
+    method: "get",
+    pathParams: ["database_id"],
+    queryParams: [],
+    bodyParams: [],
+    path: (p) => `databases/${p.database_id}`,
+};
+exports.pagesCreate = {
+    method: "post",
+    pathParams: [],
+    queryParams: [],
+    bodyParams: ["parent", "properties", "children"],
+    path: () => `pages`,
+};
+exports.databasesCreate = {
+    method: "post",
+    pathParams: [],
+    queryParams: [],
+    bodyParams: ["parent", "properties", "title"],
+    path: () => `databases`,
+};
+exports.pagesRetrieve = {
+    method: "get",
+    pathParams: ["page_id"],
+    queryParams: [],
+    bodyParams: [],
+    path: (p) => `pages/${p.page_id}`,
+};
+exports.pagesUpdate = {
+    method: "patch",
+    pathParams: ["page_id"],
+    queryParams: [],
+    bodyParams: ["archived", "properties"],
+    path: (p) => `pages/${p.page_id}`,
+};
+exports.usersRetrieve = {
+    method: "get",
+    pathParams: ["user_id"],
+    queryParams: [],
+    bodyParams: [],
+    path: (p) => `users/${p.user_id}`,
+};
+exports.usersList = {
+    method: "get",
+    pathParams: [],
+    queryParams: ["start_cursor", "page_size"],
+    bodyParams: [],
+    path: () => `users`,
+};
+exports.search = {
+    method: "post",
+    pathParams: [],
+    queryParams: [],
+    bodyParams: ["query", "sort", "filter", "start_cursor", "page_size"],
+    path: () => `search`,
+};
+//# sourceMappingURL=api-endpoints.js.map
+
+/***/ }),
+
+/***/ 259:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.buildRequestError = exports.APIResponseError = exports.UnknownHTTPResponseError = exports.isHTTPResponseError = exports.RequestTimeoutError = exports.isNotionClientError = exports.ClientErrorCode = exports.APIErrorCode = void 0;
+const helpers_1 = __nccwpck_require__(682);
+/**
+ * Error codes returned in responses from the API.
+ */
+var APIErrorCode;
+(function (APIErrorCode) {
+    APIErrorCode["Unauthorized"] = "unauthorized";
+    APIErrorCode["RestrictedResource"] = "restricted_resource";
+    APIErrorCode["ObjectNotFound"] = "object_not_found";
+    APIErrorCode["RateLimited"] = "rate_limited";
+    APIErrorCode["InvalidJSON"] = "invalid_json";
+    APIErrorCode["InvalidRequestURL"] = "invalid_request_url";
+    APIErrorCode["InvalidRequest"] = "invalid_request";
+    APIErrorCode["ValidationError"] = "validation_error";
+    APIErrorCode["ConflictError"] = "conflict_error";
+    APIErrorCode["InternalServerError"] = "internal_server_error";
+    APIErrorCode["ServiceUnavailable"] = "service_unavailable";
+})(APIErrorCode = exports.APIErrorCode || (exports.APIErrorCode = {}));
+/**
+ * Error codes generated for client errors.
+ */
+var ClientErrorCode;
+(function (ClientErrorCode) {
+    ClientErrorCode["RequestTimeout"] = "notionhq_client_request_timeout";
+    ClientErrorCode["ResponseError"] = "notionhq_client_response_error";
+})(ClientErrorCode = exports.ClientErrorCode || (exports.ClientErrorCode = {}));
+/**
+ * Base error type.
+ */
+class NotionClientErrorBase extends Error {
+}
+/**
+ * @param error any value, usually a caught error.
+ * @returns `true` if error is a `NotionClientError`.
+ */
+function isNotionClientError(error) {
+    return helpers_1.isObject(error) && error instanceof NotionClientErrorBase;
+}
+exports.isNotionClientError = isNotionClientError;
+/**
+ * Narrows down the types of a NotionClientError.
+ * @param error any value, usually a caught error.
+ * @param codes an object mapping from possible error codes to `true`
+ * @returns `true` if error is a `NotionClientError` with a code in `codes`.
+ */
+function isNotionClientErrorWithCode(error, codes) {
+    return isNotionClientError(error) && error.code in codes;
+}
+/**
+ * Error thrown by the client if a request times out.
+ */
+class RequestTimeoutError extends NotionClientErrorBase {
+    constructor(message = "Request to Notion API has timed out") {
+        super(message);
+        this.code = ClientErrorCode.RequestTimeout;
+        this.name = "RequestTimeoutError";
+    }
+    static isRequestTimeoutError(error) {
+        return isNotionClientErrorWithCode(error, {
+            [ClientErrorCode.RequestTimeout]: true,
+        });
+    }
+    static rejectAfterTimeout(promise, timeoutMS) {
+        return new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(() => {
+                reject(new RequestTimeoutError());
+            }, timeoutMS);
+            promise
+                .then(resolve)
+                .catch(reject)
+                .then(() => clearTimeout(timeoutId));
+        });
+    }
+}
+exports.RequestTimeoutError = RequestTimeoutError;
+class HTTPResponseError extends NotionClientErrorBase {
+    constructor(args) {
+        super(args.message);
+        this.name = "HTTPResponseError";
+        const { code, status, headers, rawBodyText } = args;
+        this.code = code;
+        this.status = status;
+        this.headers = headers;
+        this.body = rawBodyText;
+    }
+}
+const httpResponseErrorCodes = {
+    [ClientErrorCode.ResponseError]: true,
+    [APIErrorCode.Unauthorized]: true,
+    [APIErrorCode.RestrictedResource]: true,
+    [APIErrorCode.ObjectNotFound]: true,
+    [APIErrorCode.RateLimited]: true,
+    [APIErrorCode.InvalidJSON]: true,
+    [APIErrorCode.InvalidRequestURL]: true,
+    [APIErrorCode.InvalidRequest]: true,
+    [APIErrorCode.ValidationError]: true,
+    [APIErrorCode.ConflictError]: true,
+    [APIErrorCode.InternalServerError]: true,
+    [APIErrorCode.ServiceUnavailable]: true,
+};
+function isHTTPResponseError(error) {
+    if (!isNotionClientErrorWithCode(error, httpResponseErrorCodes)) {
+        return false;
+    }
+    return true;
+}
+exports.isHTTPResponseError = isHTTPResponseError;
+/**
+ * Error thrown if an API call responds with an unknown error code, or does not respond with
+ * a property-formatted error.
+ */
+class UnknownHTTPResponseError extends HTTPResponseError {
+    constructor(args) {
+        var _a;
+        super({
+            ...args,
+            code: ClientErrorCode.ResponseError,
+            message: (_a = args.message) !== null && _a !== void 0 ? _a : `Request to Notion API failed with status: ${args.status}`,
+        });
+        this.name = "UnknownHTTPResponseError";
+    }
+    static isUnknownHTTPResponseError(error) {
+        return isNotionClientErrorWithCode(error, {
+            [ClientErrorCode.ResponseError]: true,
+        });
+    }
+}
+exports.UnknownHTTPResponseError = UnknownHTTPResponseError;
+const apiErrorCodes = {
+    [APIErrorCode.Unauthorized]: true,
+    [APIErrorCode.RestrictedResource]: true,
+    [APIErrorCode.ObjectNotFound]: true,
+    [APIErrorCode.RateLimited]: true,
+    [APIErrorCode.InvalidJSON]: true,
+    [APIErrorCode.InvalidRequestURL]: true,
+    [APIErrorCode.InvalidRequest]: true,
+    [APIErrorCode.ValidationError]: true,
+    [APIErrorCode.ConflictError]: true,
+    [APIErrorCode.InternalServerError]: true,
+    [APIErrorCode.ServiceUnavailable]: true,
+};
+/**
+ * A response from the API indicating a problem.
+ * Use the `code` property to handle various kinds of errors. All its possible values are in `APIErrorCode`.
+ */
+class APIResponseError extends HTTPResponseError {
+    constructor() {
+        super(...arguments);
+        this.name = "APIResponseError";
+    }
+    static isAPIResponseError(error) {
+        return isNotionClientErrorWithCode(error, apiErrorCodes);
+    }
+}
+exports.APIResponseError = APIResponseError;
+function buildRequestError(response, bodyText) {
+    const apiErrorResponseBody = parseAPIErrorResponseBody(bodyText);
+    if (apiErrorResponseBody !== undefined) {
+        return new APIResponseError({
+            code: apiErrorResponseBody.code,
+            message: apiErrorResponseBody.message,
+            headers: response.headers,
+            status: response.status,
+            rawBodyText: bodyText,
+        });
+    }
+    return new UnknownHTTPResponseError({
+        message: undefined,
+        headers: response.headers,
+        status: response.status,
+        rawBodyText: bodyText,
+    });
+}
+exports.buildRequestError = buildRequestError;
+function parseAPIErrorResponseBody(body) {
+    if (typeof body !== "string") {
+        return;
+    }
+    let parsed;
+    try {
+        parsed = JSON.parse(body);
+    }
+    catch (parseError) {
+        return;
+    }
+    if (!helpers_1.isObject(parsed) ||
+        typeof parsed["message"] !== "string" ||
+        !isAPIErrorCode(parsed["code"])) {
+        return;
+    }
+    return {
+        ...parsed,
+        code: parsed["code"],
+        message: parsed["message"],
+    };
+}
+function isAPIErrorCode(code) {
+    return typeof code === "string" && code in apiErrorCodes;
+}
+//# sourceMappingURL=errors.js.map
+
+/***/ }),
+
+/***/ 682:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isObject = exports.pick = exports.assertNever = void 0;
+/**
+ * Utility for enforcing exhaustiveness checks in the type system.
+ *
+ * @see https://basarat.gitbook.io/typescript/type-system/discriminated-unions#throw-in-exhaustive-checks
+ *
+ * @param value The variable with no remaining values
+ */
+function assertNever(value) {
+    throw new Error(`Unexpected value should never occur: ${value}`);
+}
+exports.assertNever = assertNever;
+function pick(base, keys) {
+    const entries = keys.map(key => [key, base === null || base === void 0 ? void 0 : base[key]]);
+    return Object.fromEntries(entries);
+}
+exports.pick = pick;
+function isObject(o) {
+    return typeof o === "object" && o !== null;
+}
+exports.isObject = isObject;
+//# sourceMappingURL=helpers.js.map
+
+/***/ }),
+
+/***/ 324:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isNotionClientError = exports.RequestTimeoutError = exports.UnknownHTTPResponseError = exports.APIResponseError = exports.ClientErrorCode = exports.APIErrorCode = exports.LogLevel = exports.Client = void 0;
+var Client_1 = __nccwpck_require__(492);
+Object.defineProperty(exports, "Client", ({ enumerable: true, get: function () { return Client_1.default; } }));
+var logging_1 = __nccwpck_require__(96);
+Object.defineProperty(exports, "LogLevel", ({ enumerable: true, get: function () { return logging_1.LogLevel; } }));
+var errors_1 = __nccwpck_require__(259);
+Object.defineProperty(exports, "APIErrorCode", ({ enumerable: true, get: function () { return errors_1.APIErrorCode; } }));
+Object.defineProperty(exports, "ClientErrorCode", ({ enumerable: true, get: function () { return errors_1.ClientErrorCode; } }));
+Object.defineProperty(exports, "APIResponseError", ({ enumerable: true, get: function () { return errors_1.APIResponseError; } }));
+Object.defineProperty(exports, "UnknownHTTPResponseError", ({ enumerable: true, get: function () { return errors_1.UnknownHTTPResponseError; } }));
+Object.defineProperty(exports, "RequestTimeoutError", ({ enumerable: true, get: function () { return errors_1.RequestTimeoutError; } }));
+// Error helpers
+Object.defineProperty(exports, "isNotionClientError", ({ enumerable: true, get: function () { return errors_1.isNotionClientError; } }));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 96:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.logLevelSeverity = exports.makeConsoleLogger = exports.LogLevel = void 0;
+const helpers_1 = __nccwpck_require__(682);
+var LogLevel;
+(function (LogLevel) {
+    LogLevel["DEBUG"] = "debug";
+    LogLevel["INFO"] = "info";
+    LogLevel["WARN"] = "warn";
+    LogLevel["ERROR"] = "error";
+})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
+function makeConsoleLogger(name) {
+    return (level, message, extraInfo) => {
+        console[level](`${name} ${level}:`, message, extraInfo);
+    };
+}
+exports.makeConsoleLogger = makeConsoleLogger;
+/**
+ * Transforms a log level into a comparable (numerical) value ordered by severity.
+ */
+function logLevelSeverity(level) {
+    switch (level) {
+        case LogLevel.DEBUG:
+            return 20;
+        case LogLevel.INFO:
+            return 40;
+        case LogLevel.WARN:
+            return 60;
+        case LogLevel.ERROR:
+            return 80;
+        default:
+            return helpers_1.assertNever(level);
+    }
+}
+exports.logLevelSeverity = logLevelSeverity;
+//# sourceMappingURL=logging.js.map
 
 /***/ }),
 
@@ -21011,17 +21733,15 @@ exports.FetchError = FetchError;
 
 /***/ }),
 
-/***/ 621:
+/***/ 47:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const fetch = __nccwpck_require__(467);
 const { getYouTubeVideoId } = __nccwpck_require__(906);
-const youtubeService = __nccwpck_require__(795);
+const youtubeService = __nccwpck_require__(95);
+const notionService = __nccwpck_require__(207);
 const { differenceBy } = __nccwpck_require__(250);
-
-const types = {
-  VIDEO_PODCAST: 'VIDEO_PODCAST',
-}
+const { types } = __nccwpck_require__(329);
 
 const GH_STARS_TOKEN = process.env.GH_STARS_TOKEN;
 const GH_STARS_ENDPOINT = 'https://github-stars-api.herokuapp.com/';
@@ -21029,9 +21749,14 @@ const GH_STARS_ENDPOINT = 'https://github-stars-api.herokuapp.com/';
 const service = {
   types,
   async addNewContributions() {
-    // [VideoContributions]
-    const last15youtubeVideos = await youtubeService.getLast15Uploads();
     const allContributions = await service.getAllContributions();  
+    // [Notion]
+    const allNotionContributions = await notionService.getAllContributions();
+    const newNotionContributions = differenceBy(allNotionContributions, allContributions, 'url');
+    // ======================================
+
+    // [YouTube Channel VideoContributions]
+    const last15youtubeVideos = await youtubeService.getLast15Uploads();
     const newYouTubeContributions = differenceBy(last15youtubeVideos, allContributions, 'url').map((video) => {
       return {
         title: video.title,
@@ -21041,11 +21766,11 @@ const service = {
         date: video.date
       }
     });
-    
     // ======================================
 
     const newContributions = [
       ...newYouTubeContributions,
+      ...newNotionContributions,
     ]
 
     if(newContributions.length) {
@@ -21121,7 +21846,80 @@ module.exports = service;
 
 /***/ }),
 
-/***/ 795:
+/***/ 329:
+/***/ ((module) => {
+
+const types = {
+  SPEAKING: 'SPEAKING',
+  BLOGPOST: 'BLOGPOST',
+  ARTICLE_PUBLICATION: 'ARTICLE_PUBLICATION',
+  EVENT_ORGANIZATION: 'EVENT_ORGANIZATION',
+  HACKATHON: 'HACKATHON',
+  OPEN_SOURCE_PROJECT: 'OPEN_SOURCE_PROJECT',
+  VIDEO_PODCAST: 'VIDEO_PODCAST',
+  FORUM: 'FORUM',
+  OTHER: 'OTHER',
+}
+
+module.exports = {
+  types,
+};
+
+/***/ }),
+
+/***/ 207:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+__nccwpck_require__(437).config();
+const { Client } = __nccwpck_require__(324);
+const { types } = __nccwpck_require__(329)
+// https://developers.notion.com/reference/get-database
+const ID_CONTRIBUTIONS_DB = 'a3f56bec1a214c058f7d7f2ccfb63d49';
+
+const notion = new Client({
+  auth: process.env.NOTION_TOKEN,
+});
+
+const repository = {
+  async getAllContributions() {
+    const contributionsFromNotion = await notion.databases.query({
+      database_id: ID_CONTRIBUTIONS_DB,
+    });
+
+    const contributions = contributionsFromNotion.results
+      .map((contribution) => {
+        const fields = contribution.properties;
+        
+        const title = fields.Title.title.reduce((acc, item) => `${acc}${item.text.content}`, '');
+        if(!title) return null;
+
+        const status = fields.Status.select.name;
+        const contributionDTO = {
+          title,
+          url: fields.URL.url,
+          description: fields.Description.rich_text.reduce((acc, item) => `${acc}${item.text.content}`, ''),
+          type: fields.Type.select.name,
+          date: new Date(fields.Date.date.start).toISOString(),
+        };
+        
+        if(status !== 'DONE') return null;
+
+        const hasValidType = types[contributionDTO.type] !== undefined;
+        if (!hasValidType) return null;
+
+        return contributionDTO;
+      })
+      .filter(Boolean);
+
+    return contributions;
+  },
+};
+
+module.exports = repository;
+
+/***/ }),
+
+/***/ 95:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const fetch = __nccwpck_require__(467);
@@ -21153,6 +21951,7 @@ module.exports = {
       })
   }
 }
+
 
 /***/ }),
 
@@ -21283,7 +22082,7 @@ var __webpack_exports__ = {};
 (() => {
 __nccwpck_require__(437).config();
 const core = __nccwpck_require__(186);
-const githubStarsService = __nccwpck_require__(621);
+const githubStarsService = __nccwpck_require__(47);
 
 async function main() {
   try {
@@ -21299,6 +22098,7 @@ async function main() {
 }
 
 main();
+
 })();
 
 module.exports = __webpack_exports__;
